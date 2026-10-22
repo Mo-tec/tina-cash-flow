@@ -1,0 +1,17 @@
+{
+  "name": "TINA CASH FLOW",
+  "short_name": "TINA CASH",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7e6f0",
+  "theme_color": "#e83e8c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

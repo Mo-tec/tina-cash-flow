@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="sw">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TINA CASH FLOW</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#e83e8c" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="loginView" class="login-shell">
+    <section class="login-box">
+      <div class="brand-row"><span class="brand-mark">L</span><strong>TINA CASH FLOW</strong></div>
+      <h1 data-i18n="loginTitle">Karibu tena</h1>
+      <p data-i18n="loginSubtitle">Ingia kwenye mfumo wa usimamizi wa mikopo.</p>
+      <form id="loginForm">
+        <label><span data-i18n="email">Barua pepe</span><input id="loginEmail" type="email" value="admin@loanflow.com" required /></label>
+        <label><span data-i18n="password">Nywila</span><input id="loginPassword" type="password" value="admin123" required /></label>
+        <button type="submit" data-i18n="login">Ingia</button>
+        <small id="loginError"></small>
+      </form>
+    </section>
+  </main>
+
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">L</span><strong>TINA CASH FLOW</strong></div>
+      <nav>
+        <button class="nav-link active" data-panel="overviewPanel" data-i18n="overview">Mapitio</button>
+        <button class="nav-link" data-panel="customersPanel" data-i18n="customers">Wateja</button>
+        <button class="nav-link" data-panel="loansPanel" data-i18n="loans">Mikopo</button>
+        <button class="nav-link" data-panel="paymentsPanel" data-i18n="payments">Malipo</button>
+        <button class="nav-link" data-panel="cashflowPanel" data-i18n="cashflow">Mtiririko</button>
+        <button class="nav-link" data-panel="expensesPanel" data-i18n="expenses">Matumizi</button>
+        <button class="nav-link" data-panel="reportsPanel" data-i18n="reports">Ripoti</button>
+        <button class="nav-link" data-panel="settingsPanel" data-i18n="settings">Usalama</button>
+      </nav>
+      <button id="logoutBtn" class="ghost full" data-i18n="logout">Toka</button>
+    </aside>
+
+    <section class="content">
+      <header class="topbar">
+        <div>
+          <span id="panelSubtitle">Loan performance</span>
+          <h1 id="panelTitle">Dashibodi</h1>
+        </div>
+        <div class="actions">
+          <button id="langBtn" class="ghost">EN</button>
+          <button id="themeBtn" class="ghost">Dark</button>
+          <button id="exportExcelBtn" class="secondary" data-i18n="exportExcel">Export Excel</button>
+          <button id="exportPdfBtn" class="secondary" data-i18n="exportPdf">Export PDF</button>
+          <button id="installBtn" class="secondary hidden" data-i18n="installApp">Install App</button>
+          <button id="backupBtn" data-i18n="backupJson">Backup JSON</button>
+          <label class="import-btn"><span data-i18n="import">Import</span><input id="importFile" type="file" accept="application/json" /></label>
+        </div>
+      </header>
+
+      <section id="overviewPanel" class="panel-view active-panel">
+        <section class="stats-grid">
+          <article class="stat pink"><span data-i18n="customers">Wateja</span><strong id="totalCustomers">0</strong></article>
+          <article class="stat purple"><span data-i18n="totalLoans">Jumla Mikopo</span><strong id="totalLoans">$0.00</strong></article>
+          <article class="stat blue"><span data-i18n="paid">Imelipwa</span><strong id="totalPaid">$0.00</strong></article>
+          <article class="stat orange"><span data-i18n="balance">Salio</span><strong id="totalRemaining">$0.00</strong></article>
+        </section>
+        <section class="hero-grid">
+          <article class="card chart-card">
+            <div class="section-head"><h2 data-i18n="loanTrend">Mwenendo wa mikopo</h2><span id="collectionRate">0% collected</span></div>
+            <div id="loanChart" class="loan-chart"></div>
+          </article>
+          <article class="card donut-card">
+            <div class="section-head"><h2 data-i18n="loanStatus">Hali ya mikopo</h2><span id="loanCount">0 loans</span></div>
+            <div id="donut" class="donut"><div><strong id="paidPercent">0%</strong><span data-i18n="paidStatus">Paid</span></div></div>
+            <div class="legend"><span data-i18n="active">Active</span><span data-i18n="paidStatus">Paid</span><span data-i18n="overdue">Overdue</span></div>
+          </article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head"><h2 data-i18n="recentLoans">Mikopo ya karibuni</h2><span data-i18n="summary">Muhtasari</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="loan">Mkopo</th><th data-i18n="paid">Imelipwa</th><th data-i18n="balance">Salio</th><th data-i18n="statusLabel">Hali</th></tr></thead><tbody id="recentLoanRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="customersPanel" class="panel-view">
+        <section class="split-grid">
+          <article class="card">
+            <h2 data-i18n="addCustomer">Ongeza Mteja</h2>
+            <form id="customerForm">
+              <label><span data-i18n="fullName">Jina kamili</span><input id="customerName" required /></label>
+              <label><span data-i18n="phone">Namba ya simu</span><input id="customerPhone" /></label>
+              <div class="form-actions"><button id="customerSaveBtn" type="submit" data-i18n="saveCustomer">Hifadhi Mteja</button><button id="cancelCustomerEdit" type="button" class="secondary hidden" data-i18n="cancel">Ghairi</button></div>
+            </form>
+          </article>
+          <article class="card mini-dashboard">
+            <span data-i18n="totalCustomers">Jumla ya wateja</span><strong id="customerPanelTotal">0</strong><small data-i18n="localCustomers">Wateja waliopo kwenye kifaa hiki</small>
+          </article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head"><h2 data-i18n="customerList">Orodha ya Wateja</h2><span id="customerCountLabel">0 records</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="number">Namba</th><th data-i18n="name">Jina</th><th data-i18n="phoneShort">Simu</th><th data-i18n="loans">Mikopo</th><th data-i18n="totalLoan">Jumla Mkopo</th><th data-i18n="actions">Vitendo</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="loansPanel" class="panel-view">
+        <section class="split-grid">
+          <article class="card">
+            <h2 data-i18n="newLoan">Mkopo Mpya</h2>
+            <form id="loanForm">
+              <label><span data-i18n="customer">Mteja</span><select id="loanCustomer" required></select></label>
+              <label><span data-i18n="amount">Kiasi</span><input id="loanAmount" type="number" min="1" step="0.01" required /></label>
+              <label><span data-i18n="interest">Riba</span><input id="interestRate" type="number" min="0" step="0.01" value="0" required /></label>
+              <div class="total-preview"><span data-i18n="totalToPay">Jumla ya kulipa</span><strong id="loanTotalPreview">$0.00</strong></div>
+              <div class="row"><label><span data-i18n="date">Tarehe</span><input id="takenAt" type="date" required /></label><label><span data-i18n="dueDate">Mwisho</span><input id="dueAt" type="date" required /></label></div>
+              <button type="submit" data-i18n="createLoan">Unda Mkopo</button>
+            </form>
+          </article>
+          <article class="card mini-dashboard purple-mini">
+            <span data-i18n="allLoans">Mikopo yote</span><strong id="loanPanelTotal">$0.00</strong><small id="loanPanelCount">0 mikopo</small>
+          </article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head"><h2 data-i18n="loanList">Orodha ya Mikopo</h2><span data-i18n="allLoans">Mikopo yote</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="loan">Mkopo</th><th data-i18n="date">Tarehe</th><th data-i18n="dueDate">Mwisho</th><th data-i18n="paid">Imelipwa</th><th data-i18n="balance">Salio</th><th data-i18n="statusLabel">Hali</th><th data-i18n="actions">Vitendo</th></tr></thead><tbody id="allLoanRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="paymentsPanel" class="panel-view">
+        <section class="split-grid">
+          <article class="card">
+            <h2 data-i18n="recordPayment">Rekodi Malipo</h2>
+            <form id="paymentForm">
+              <label><span data-i18n="loan">Mkopo</span><select id="paymentLoan" required></select></label>
+              <label><span data-i18n="amount">Kiasi</span><input id="paymentAmount" type="number" min="1" step="0.01" required /></label>
+              <div class="row"><label><span data-i18n="date">Tarehe</span><input id="paidAt" type="date" required /></label><label><span data-i18n="note">Kumbuka</span><input id="paymentNote" /></label></div>
+              <button type="submit" data-i18n="recordPayment">Rekodi Malipo</button>
+            </form>
+          </article>
+          <article class="card mini-dashboard blue-mini">
+            <span data-i18n="totalPayments">Malipo yote</span><strong id="paymentPanelTotal">$0.00</strong><small id="paymentPanelCount">0 malipo</small>
+          </article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head"><h2 data-i18n="paymentHistory">Historia ya Malipo</h2><span data-i18n="recentPayments">Malipo ya karibuni</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="amount">Kiasi</th><th data-i18n="date">Tarehe</th><th data-i18n="note">Kumbuka</th><th data-i18n="actions">Vitendo</th></tr></thead><tbody id="paymentRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="cashflowPanel" class="panel-view">
+        <section class="card collection-card">
+          <div class="section-head"><h2 data-i18n="totalCollection">TOTAL COLLECTION</h2></div>
+          <div class="collection-grid">
+            <article class="stat blue"><span data-i18n="todayCollection">Leo</span><strong id="collectionToday">$0.00</strong></article>
+            <article class="stat purple"><span data-i18n="weekCollection">Wiki hii</span><strong id="collectionWeek">$0.00</strong></article>
+            <article class="stat pink"><span data-i18n="monthCollection">Mwezi huu</span><strong id="collectionMonth">$0.00</strong></article>
+          </div>
+        </section>
+        <section class="stats-grid">
+          <article class="stat blue"><span data-i18n="todayReturns">Marejesho ya leo</span><strong id="todayReturns">$0.00</strong></article>
+          <article class="stat orange"><span data-i18n="todayExpenses">Matumizi ya leo</span><strong id="todayExpenses">$0.00</strong></article>
+          <article class="stat purple"><span data-i18n="todayBalance">Balance ya leo</span><strong id="todayBalance">$0.00</strong></article>
+          <article class="stat pink"><span data-i18n="borrowersToday">Waliokopa leo</span><strong id="borrowersToday">0</strong></article>
+        </section>
+        <section class="hero-grid">
+          <article class="card table-card">
+            <div class="section-head"><h2 data-i18n="dailyReturns">Maingizo ya marejesho</h2><input id="cashflowDate" type="date" /></div>
+            <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="amount">Kiasi</th><th data-i18n="date">Tarehe</th><th data-i18n="note">Kumbuka</th></tr></thead><tbody id="dailyReturnRows"></tbody></table></div>
+          </article>
+          <article class="card table-card">
+            <div class="section-head"><h2 data-i18n="dailyLoans">Mikopo ya siku</h2><span id="dailyLoanCount">0</span></div>
+            <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="loan">Mkopo</th><th data-i18n="date">Tarehe</th><th data-i18n="statusLabel">Hali</th></tr></thead><tbody id="dailyLoanRows"></tbody></table></div>
+          </article>
+        </section>
+      </section>
+
+      <section id="expensesPanel" class="panel-view">
+        <section class="split-grid">
+          <article class="card">
+            <h2 data-i18n="addExpense">Ongeza Matumizi</h2>
+            <form id="expenseForm">
+              <label><span data-i18n="date">Tarehe</span><input id="expenseDate" type="date" required /></label>
+              <label><span data-i18n="amount">Kiasi</span><input id="expenseAmount" type="number" min="1" step="0.01" required /></label>
+              <label><span data-i18n="expenseType">Aina ya matumizi</span><select id="expenseType"><option value="loan" data-i18n="customerLoanOut">Mkopo kwa mteja</option><option value="business" data-i18n="businessExpense">Matumizi ya biashara</option><option value="other" data-i18n="otherExpense">Mengine</option></select></label>
+              <label><span data-i18n="note">Kumbuka</span><input id="expenseNote" /></label>
+              <button type="submit" data-i18n="saveExpense">Hifadhi Matumizi</button>
+            </form>
+          </article>
+          <article class="card mini-dashboard orange-mini">
+            <span data-i18n="availableFromReturns">Kilichobaki kwenye marejesho</span><strong id="availableFromReturns">$0.00</strong><small data-i18n="availableNote">Marejesho yote minus matumizi yote</small>
+          </article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head"><h2 data-i18n="expenseHistory">Historia ya Matumizi</h2><span id="expenseCountLabel">0</span></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="date">Tarehe</th><th data-i18n="amount">Kiasi</th><th data-i18n="expenseType">Aina</th><th data-i18n="note">Kumbuka</th><th data-i18n="actions">Vitendo</th></tr></thead><tbody id="expenseRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="reportsPanel" class="panel-view">
+        <section class="stats-grid">
+          <article class="stat pink"><span data-i18n="active">Active</span><strong id="activeLoans">0</strong></article>
+          <article class="stat purple"><span data-i18n="paidStatus">Paid</span><strong id="paidLoans">0</strong></article>
+          <article class="stat orange"><span data-i18n="overdue">Overdue</span><strong id="overdueLoans">0</strong></article>
+          <article class="stat blue"><span data-i18n="collection">Collection</span><strong id="reportCollection">0%</strong></article>
+        </section>
+        <section class="card table-card">
+          <div class="section-head report-head">
+            <h2 data-i18n="loanReport">Ripoti ya Mikopo</h2>
+            <div class="filters"><input id="searchInput" placeholder="Tafuta mteja" data-i18n-placeholder="searchCustomer" /><select id="statusFilter"><option>ALL</option><option>ACTIVE</option><option>PAID</option><option>OVERDUE</option></select></div>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="customer">Mteja</th><th data-i18n="phoneShort">Simu</th><th data-i18n="loan">Mkopo</th><th data-i18n="paid">Imelipwa</th><th data-i18n="balance">Salio</th><th data-i18n="dueDate">Mwisho</th><th data-i18n="statusLabel">Hali</th><th data-i18n="actions">Vitendo</th></tr></thead><tbody id="loanRows"></tbody></table></div>
+        </section>
+        <section class="card table-card schedule-card">
+          <div class="section-head report-head"><h2 data-i18n="paymentFlow">Mtiririko wa malipo</h2><div class="filters"><select id="scheduleLoan"></select></div></div>
+          <div class="table-wrap"><table><thead><tr><th data-i18n="date">Tarehe</th><th data-i18n="expected">Inategemewa</th><th data-i18n="paid">Imelipwa</th><th data-i18n="balance">Salio</th><th data-i18n="statusLabel">Hali</th></tr></thead><tbody id="scheduleRows"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="settingsPanel" class="panel-view">
+        <section class="split-grid">
+          <article class="card">
+            <h2 data-i18n="changePassword">Badili Password</h2>
+            <form id="passwordForm">
+              <label><span data-i18n="oldPassword">Password ya sasa</span><input id="oldPassword" type="password" required /></label>
+              <label><span data-i18n="newPassword">Password mpya</span><input id="newPassword" type="password" minlength="4" required /></label>
+              <label><span data-i18n="confirmPassword">Rudia password mpya</span><input id="confirmPassword" type="password" minlength="4" required /></label>
+              <button type="submit" data-i18n="savePassword">Hifadhi Password</button>
+              <small id="passwordMessage"></small>
+            </form>
+          </article>
+          <article class="card mini-dashboard orange-mini">
+            <span data-i18n="autoBackup">Backup ya automatic</span><strong>00:00</strong><small data-i18n="backupNote">Inafanya kazi app ikiwa wazi kwenye browser.</small>
+          </article>
+        </section>
+      </section>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
